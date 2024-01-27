@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ExampleConttroller;
 
 /*
@@ -16,3 +17,4 @@ use App\Http\Controllers\ExampleConttroller;
 
 Route::get('/', [ExampleConttroller::class, "homepage"]);
 Route::get('/about-us', [ExampleConttroller::class, "aboutPage"]);
+Route::post('/register', [UserController::class, "register"]);
