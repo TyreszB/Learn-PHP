@@ -16,11 +16,12 @@ use App\Http\Controllers\ExampleConttroller;
 |
 */
 
-Route::get('/', [UserController::class, "showCorrectHomepage"]);
+Route::get('/', [UserController::class, "showCorrectHomepage"])->name('/login');
 
-Route::post('/register', [UserController::class, "register"]);
-Route::post('/login', [UserController::class, "login"]);
-Route::post('/logout', [UserController::class, "logout"]);
+Route::post('/register', [UserController::class, "register"])->middleware('guest');
+Route::post('/login', [UserController::class, "login"])->middleware('guess');
+Route::post('/logout', [UserController::class, "logout"])->('auth');
 
-Route::get('/create-post', [PostController::class, "showCreatePost"]);
-Route::post('/create-post', [PostController::class, "showCreatePost"]);
+Route::get('/create-post', [PostController::class, "showCreatePost"])->middleware('auth');
+Route::get('/post/{post}', [PostController::class, "viewSinglePost"])->middleware('auth');
+Route::post('/create-post', [PostController::class, "createPost"])->middleware('auth');
