@@ -19,9 +19,14 @@ use App\Http\Controllers\ExampleConttroller;
 Route::get('/', [UserController::class, "showCorrectHomepage"])->name('/login');
 
 Route::post('/register', [UserController::class, "register"])->middleware('guest');
-Route::post('/login', [UserController::class, "login"])->middleware('guess');
-Route::post('/logout', [UserController::class, "logout"])->('auth');
+Route::post('/login', [UserController::class, "login"])->middleware('guest');
+Route::post('/logout', [UserController::class, "logout"])->middleware('auth');
 
 Route::get('/create-post', [PostController::class, "showCreatePost"])->middleware('auth');
 Route::get('/post/{post}', [PostController::class, "viewSinglePost"])->middleware('auth');
 Route::post('/create-post', [PostController::class, "createPost"])->middleware('auth');
+Route::delete('/post/{post}', [PostController::class, 'delete'])->middleware('can:delete,post');
+Route::get('/post/{post}/edit', [PostController::class, 'showEditForm'])->middleware('can:update,post');
+Route::put('/post/{post}', [PostController::class, 'actuallyUpdate'])->middleware('can:update,post');
+
+Route::get('profile/{user:username}', [UserController::class, "userProfile"]);
