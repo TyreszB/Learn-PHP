@@ -17,7 +17,9 @@ use App\Http\Controllers\ExampleConttroller;
 */
 
 Route::get('/', [UserController::class, "showCorrectHomepage"])->name('/login');
+Route::get('/manage-avatar', [UserController::class, "showAvatarForm"])->middleware('auth');
 
+Route::post('/manage-avatar', [UserController::class, "storeAvatar"])->middleware('auth');
 Route::post('/register', [UserController::class, "register"])->middleware('guest');
 Route::post('/login', [UserController::class, "login"])->middleware('guest');
 Route::post('/logout', [UserController::class, "logout"])->middleware('auth');
