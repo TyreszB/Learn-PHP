@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Follow;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
 
 class UserController extends Controller
 {
@@ -43,7 +45,7 @@ class UserController extends Controller
 
     public function showCorrectHomepage() {
         if (auth()->check()) {
-            return view('homepage-feed');
+            return view('homepage-feed', ['posts' => auth()->user()->feedPosts()->latest()->paginate(4)]);
         } else {
             return view('homepage');
         }
@@ -89,8 +91,31 @@ class UserController extends Controller
 
     }
 
+    private function getData($user) {
+        $currentlyFollowing = 0;
+
+        if (auth()->check()) {
+            $currentlyFollowing = Follow::where([['user_id', '=', auth()->user()->id], ['followeduser', '=', $user->id]])->count();
+        }
+
+        View::share('userData', ['currentlyFollowing' => $currentlyFollowing, 'avatar' => $user->avatar, 'username' => $user->username, 'postCount' => $user->post()->count(), 'followerCount' => $user-> followers()->count(), 'followingCount' => $user->following()->count() ]);
+    }
+
     public function userProfile(User $user) {
+       $this->getData($user);
         
-        return view('/profile-post', ['avatar' => $user->avatar, 'username' => $user->username, 'posts' => $user->post()->latest()->get(), 'postCount' => $user->post()->count() ]);
+        return view('/profile-post', ['posts' => $user->post()->latest()->get()]);
+    }
+
+    public function userProfileFollowers(User $user) {
+        $this->getData($user);
+
+        return view('/profile-followers', ['followers' => $user->followers()->latest()->get()]);
+    }
+
+    public function userProfileFollowing(User $user) {
+        $this->getData($user);
+        
+        return view('/profile-following', ['following' => $user->following()->latest()->get()]);
     }
 }

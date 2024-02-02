@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\ExampleConttroller;
 
 /*
@@ -24,6 +25,9 @@ Route::post('/register', [UserController::class, "register"])->middleware('guest
 Route::post('/login', [UserController::class, "login"])->middleware('guest');
 Route::post('/logout', [UserController::class, "logout"])->middleware('auth');
 
+Route::post('/create-follow/{user:username}', [FollowController::class, 'createFollow'])->middleware('auth');
+Route::post('/remove-follow/{user:username}', [FollowController::class, 'removeFollow'])->middleware('auth');
+
 Route::get('/create-post', [PostController::class, "showCreatePost"])->middleware('auth');
 Route::get('/post/{post}', [PostController::class, "viewSinglePost"])->middleware('auth');
 Route::post('/create-post', [PostController::class, "createPost"])->middleware('auth');
@@ -32,3 +36,5 @@ Route::get('/post/{post}/edit', [PostController::class, 'showEditForm'])->middle
 Route::put('/post/{post}', [PostController::class, 'actuallyUpdate'])->middleware('can:update,post');
 
 Route::get('profile/{user:username}', [UserController::class, "userProfile"]);
+Route::get('profile/{user:username}/followers', [UserController::class, "userProfileFollowers"]);
+Route::get('profile/{user:username}/following', [UserController::class, "userProfileFollowing"]);
